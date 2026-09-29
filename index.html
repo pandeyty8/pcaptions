@@ -3,852 +3,620 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<meta name="theme-color" content="#07070a">
-<title>PCAP Studio — AI Video Captions</title>
+<title>PCAP Studio</title>
 
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
-
-:root{
-  --bg:#07070a;
-  --panel:#101116;
-  --panel2:#17181f;
-  --border:#292b35;
-  --text:#f7f7f8;
-  --muted:#9295a3;
-  --accent:#7c5cff;
-  --accent2:#a78bfa;
-}
-
+*{box-sizing:border-box}
 body{
-  background:
-    radial-gradient(circle at 20% 0%,rgba(124,92,255,.18),transparent 30%),
-    radial-gradient(circle at 90% 10%,rgba(0,212,255,.10),transparent 25%),
-    var(--bg);
-  color:var(--text);
-  font-family:Arial,Helvetica,sans-serif;
-  min-height:100vh;
+  margin:0;
+  background:#070a08;
+  color:#fff;
+  font-family:Arial,sans-serif;
 }
-
-button,input,select{font:inherit}
-
-button{
-  border:0;
-  cursor:pointer;
-}
-
-.app{
-  max-width:1250px;
+.container{
+  max-width:900px;
   margin:auto;
-  padding:18px;
+  padding:22px 16px 60px;
 }
-
-header{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:15px;
-  padding:12px 0 22px;
-}
-
-.logo{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  font-weight:900;
-  font-size:24px;
-  letter-spacing:-1px;
-}
-
-.logoIcon{
-  width:38px;
-  height:38px;
-  border-radius:12px;
-  display:grid;
-  place-items:center;
-  background:linear-gradient(135deg,#7c5cff,#00c8ff);
-  color:white;
-  box-shadow:0 8px 30px rgba(124,92,255,.3);
-}
-
-.badge{
-  font-size:11px;
-  padding:5px 8px;
-  border-radius:20px;
-  background:#1c1d25;
-  color:#b9b2ff;
-  border:1px solid #302d50;
-}
-
-.hero{
+h1{
   text-align:center;
-  padding:35px 15px 30px;
+  margin:10px 0 5px;
+  font-size:32px;
 }
-
-.hero h1{
-  font-size:clamp(32px,7vw,68px);
-  line-height:1;
-  letter-spacing:-3px;
-  background:linear-gradient(90deg,#fff,#aaa1ff,#fff);
-  -webkit-background-clip:text;
-  color:transparent;
+.sub{
+  text-align:center;
+  color:#9aa39d;
+  margin-bottom:25px;
 }
-
-.hero p{
-  color:var(--muted);
-  max-width:650px;
-  margin:16px auto 0;
-  line-height:1.6;
-}
-
-.workspace{
-  display:grid;
-  grid-template-columns:1.25fr .75fr;
-  gap:18px;
-}
-
 .card{
-  background:rgba(16,17,22,.88);
-  border:1px solid var(--border);
-  border-radius:20px;
-  padding:18px;
-  box-shadow:0 20px 70px rgba(0,0,0,.25);
-  backdrop-filter:blur(14px);
-}
-
-.preview{
-  min-height:560px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  position:relative;
-  overflow:hidden;
-}
-
-.videoWrap{
-  width:min(100%,390px);
-  aspect-ratio:9/16;
-  background:#050507;
-  border:1px solid #30313a;
-  border-radius:18px;
-  overflow:hidden;
-  position:relative;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-}
-
-video{
-  width:100%;
-  height:100%;
-  object-fit:contain;
-  display:none;
-}
-
-.empty{
-  text-align:center;
-  padding:30px;
-  color:var(--muted);
-}
-
-.emptyIcon{
-  width:70px;
-  height:70px;
-  margin:auto auto 18px;
+  background:#0d120f;
+  border:1px solid #202720;
   border-radius:22px;
-  background:#191a21;
-  display:grid;
-  place-items:center;
-  font-size:30px;
+  padding:18px;
+  margin-bottom:18px;
 }
-
-.caption{
-  position:absolute;
-  left:50%;
-  bottom:22%;
-  transform:translateX(-50%);
-  width:92%;
-  text-align:center;
-  font-size:31px;
-  font-weight:900;
-  line-height:1.1;
-  color:white;
-  text-shadow:0 3px 12px #000;
-  pointer-events:none;
-  word-break:break-word;
-}
-
-.upload{
-  margin-top:15px;
+label{
   display:block;
-  width:100%;
-  padding:15px;
-  border-radius:13px;
-  background:linear-gradient(135deg,#7c5cff,#6347e8);
-  color:white;
-  font-weight:800;
-  text-align:center;
-}
-
-input[type=file]{display:none}
-
-.section{
-  margin-bottom:20px;
-}
-
-.sectionTitle{
+  color:#aeb7b0;
   font-size:13px;
+  margin:16px 0 8px;
   text-transform:uppercase;
-  letter-spacing:1px;
-  color:#a7a9b4;
-  margin-bottom:10px;
 }
-
-.primary{
+input,select,button{
   width:100%;
   padding:14px;
-  border-radius:12px;
+  border-radius:13px;
+  border:1px solid #252d27;
+  background:#111611;
   color:white;
-  font-weight:800;
-  background:linear-gradient(135deg,#7c5cff,#00aeea);
-  margin-bottom:10px;
+  font-size:15px;
 }
-
-.secondary{
+input[type="file"]{
+  padding:12px;
+}
+input[type="range"]{
+  padding:0;
+}
+input[type="color"]{
+  height:48px;
+  padding:4px;
+}
+button{
+  border:0;
+  background:#25d366;
+  color:#031007;
+  font-weight:bold;
+  cursor:pointer;
+  margin-top:12px;
+}
+button.secondary{
+  background:#182019;
+  color:#fff;
+  border:1px solid #29352c;
+}
+button:disabled{
+  opacity:.5;
+}
+video{
   width:100%;
+  max-height:500px;
+  border-radius:18px;
+  background:#000;
+  margin-top:12px;
+}
+.status{
+  margin-top:12px;
   padding:12px;
   border-radius:12px;
-  background:#1a1b22;
-  color:white;
-  border:1px solid #2b2c34;
+  background:#111811;
+  color:#b9c3bb;
+  font-size:14px;
+  line-height:1.5;
 }
-
-.control{
-  margin-bottom:13px;
-}
-
-.control label{
-  display:flex;
-  justify-content:space-between;
-  color:#c8c9d1;
-  font-size:13px;
-  margin-bottom:7px;
-}
-
-select,
-input[type=text]{
+.progress{
   width:100%;
-  background:#191a20;
-  color:white;
-  border:1px solid #30313a;
-  border-radius:10px;
-  padding:11px;
-  outline:none;
-}
-
-input[type=range]{
-  width:100%;
-  accent-color:#7c5cff;
-}
-
-.colors{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:10px;
-}
-
-.colorBox{
-  background:#191a20;
-  border:1px solid #30313a;
-  padding:8px;
-  border-radius:10px;
-  color:#bbb;
-  font-size:12px;
-}
-
-.colorBox input{
-  width:100%;
-  height:34px;
-  margin-top:5px;
-  border:0;
-  background:transparent;
-}
-
-.fontCount{
-  margin-top:7px;
-  font-size:11px;
-  color:#777b88;
-}
-
-.animPreview{
-  padding:15px;
-  background:#0b0c10;
-  border-radius:12px;
-  text-align:center;
-  font-size:20px;
-  font-weight:900;
+  height:8px;
+  background:#1a211c;
+  border-radius:20px;
+  overflow:hidden;
   margin-top:10px;
 }
-
-@keyframes pop{
-  0%{transform:scale(.7);opacity:0}
-  70%{transform:scale(1.08)}
-  100%{transform:scale(1);opacity:1}
+.progress div{
+  height:100%;
+  width:0%;
+  background:#25d366;
+  transition:.2s;
 }
-
-@keyframes bounce{
-  0%,100%{transform:translateY(0)}
-  50%{transform:translateY(-8px)}
+.preview{
+  position:relative;
+  overflow:hidden;
 }
-
-@keyframes shake{
-  0%,100%{transform:translateX(0)}
-  25%{transform:translateX(-5px)}
-  75%{transform:translateX(5px)}
-}
-
-@keyframes glow{
-  0%,100%{filter:drop-shadow(0 0 2px white)}
-  50%{filter:drop-shadow(0 0 15px #a78bfa)}
-}
-
-.anim-pop{animation:pop .8s infinite}
-.anim-bounce{animation:bounce .8s infinite}
-.anim-shake{animation:shake .5s infinite}
-.anim-glow{animation:glow 1.2s infinite}
-
-.stats{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:10px;
-  margin-top:18px;
-}
-
-.stat{
-  padding:13px;
-  border-radius:13px;
-  background:#111218;
-  border:1px solid #252630;
+.captionPreview{
+  position:absolute;
+  left:50%;
+  bottom:12%;
+  transform:translateX(-50%);
+  width:90%;
   text-align:center;
+  font-size:28px;
+  font-weight:800;
+  text-shadow:0 3px 10px #000;
+  pointer-events:none;
 }
-
-.stat b{
-  display:block;
-  font-size:20px;
-}
-
-.stat span{
-  color:#777b88;
-  font-size:11px;
-}
-
-footer{
-  text-align:center;
-  padding:35px 0 10px;
-  color:#666976;
+.small{
+  color:#7f8981;
   font-size:12px;
+  margin-top:7px;
 }
-
-@media(max-width:850px){
-  .workspace{grid-template-columns:1fr}
-  .preview{min-height:500px}
+.captionsBox{
+  display:none;
 }
-
-@media(max-width:480px){
-  .app{padding:10px}
-  .hero{padding:25px 8px}
-  .hero h1{letter-spacing:-2px}
-  .card{padding:13px}
+.captionItem{
+  border:1px solid #252d27;
+  border-radius:12px;
+  padding:10px;
+  margin-top:9px;
+}
+.captionTime{
+  color:#25d366;
+  font-size:12px;
+  margin-bottom:6px;
 }
 </style>
 </head>
 
 <body>
 
-<div class="app">
+<div class="container">
 
-<header>
-  <div class="logo">
-    <div class="logoIcon">P</div>
-    PCAP Studio
-  </div>
-  <div class="badge">PRO VIDEO CAPTIONS</div>
-</header>
+<h1>PCAP Studio</h1>
+<div class="sub">AI Video Caption Generator</div>
 
-<section class="hero">
-  <h1>Turn Videos Into<br>Powerful Captions.</h1>
-  <p>
-    Create stylish captions for Reels, Shorts and videos
-    with professional fonts, animations and effects.
-  </p>
-</section>
-
-<div class="workspace">
-
-<!-- PREVIEW -->
-<div class="card preview">
-
-  <div class="videoWrap">
-
-    <video id="video" controls></video>
-
-    <div class="empty" id="empty">
-      <div class="emptyIcon">🎬</div>
-      <h3>Upload your video</h3>
-      <p style="margin-top:8px">
-        Start creating professional captions
-      </p>
-    </div>
-
-    <div class="caption" id="caption">
-      Your Caption
-    </div>
-
-  </div>
-
-</div>
-
-<!-- CONTROLS -->
 <div class="card">
 
-  <div class="section">
+<label>Video</label>
+<input id="videoInput" type="file" accept="video/*">
 
-    <div class="sectionTitle">Video</div>
+<div class="preview">
+<video id="video" controls playsinline></video>
+<div id="captionPreview" class="captionPreview">Your Caption</div>
+</div>
 
-    <label class="upload">
-      📁 Upload Video
-      <input id="videoInput" type="file" accept="video/*">
-    </label>
+</div>
 
-    <button class="primary" id="autoBtn">
-      ✨ Generate Auto Captions
-    </button>
+<div class="card">
 
-    <button class="secondary" id="exportBtn">
-      ⬇ Export Captioned Video
-    </button>
+<label>Caption</label>
+<input id="captionText" type="text" placeholder="Your Caption">
 
-  </div>
+<label>Font</label>
+<select id="fontSelect">
+<option>Arial</option>
+<option>Helvetica</option>
+<option>Verdana</option>
+<option>Tahoma</option>
+<option>Trebuchet MS</option>
+<option>Georgia</option>
+<option>Times New Roman</option>
+<option>Courier New</option>
+<option>Impact</option>
+<option>Comic Sans MS</option>
+<option>Lucida Console</option>
+<option>Segoe UI</option>
+<option>Roboto</option>
+<option>Montserrat</option>
+<option>Poppins</option>
+<option>Inter</option>
+<option>Oswald</option>
+<option>Raleway</option>
+<option>Nunito</option>
+<option>Ubuntu</option>
+<option>Playfair Display</option>
+<option>Bebas Neue</option>
+<option>Anton</option>
+<option>Lobster</option>
+<option>Pacifico</option>
+</select>
 
-  <div class="section">
+<div class="small">100+ fonts will be added in the next design module.</div>
 
-    <div class="sectionTitle">Caption Text</div>
+<label>Animation</label>
+<select id="animation">
+<option value="none">None</option>
+<option value="pop">Pop</option>
+<option value="bounce">Bounce</option>
+<option value="shake">Shake</option>
+<option value="glow">Glow</option>
+</select>
 
-    <input
-      type="text"
-      id="captionText"
-      value="Your Caption"
-      placeholder="Type caption..."
-    >
+<label>Text Size</label>
+<input id="size" type="range" min="16" max="70" value="28">
 
-  </div>
+<label>Vertical Position</label>
+<input id="position" type="range" min="5" max="80" value="12">
 
-  <div class="section">
+<label>Text Color</label>
+<input id="textColor" type="color" value="#ffffff">
 
-    <div class="sectionTitle">Font</div>
+<label>Glow Color</label>
+<input id="glowColor" type="color" value="#25d366">
 
-    <select id="fontSelect"></select>
+<button id="autoBtn">🎙️ Generate Auto Captions</button>
 
-    <div class="fontCount">
-      100+ font styles available
-    </div>
+<div class="status" id="status">
+Select a video and press Generate Auto Captions.
+</div>
 
-  </div>
+<div class="progress">
+<div id="progressBar"></div>
+</div>
 
-  <div class="section">
+</div>
 
-    <div class="sectionTitle">Animation</div>
+<div class="card captionsBox" id="captionsBox">
 
-    <select id="animationSelect">
-      <option value="none">None</option>
-      <option value="pop">Pop</option>
-      <option value="bounce">Bounce</option>
-      <option value="shake">Shake</option>
-      <option value="glow">Glow</option>
-    </select>
+<h3>Generated Captions</h3>
 
-  </div>
+<div id="captionList"></div>
 
-  <div class="section">
+</div>
 
-    <div class="sectionTitle">Caption Size</div>
+<div class="card">
 
-    <div class="control">
-      <label>
-        <span>Size</span>
-        <span id="sizeValue">31px</span>
-      </label>
-
-      <input
-        type="range"
-        id="size"
-        min="12"
-        max="70"
-        value="31"
-      >
-    </div>
-
-  </div>
-
-  <div class="section">
-
-    <div class="sectionTitle">Position</div>
-
-    <div class="control">
-      <label>
-        <span>Vertical Position</span>
-        <span id="posValue">22%</span>
-      </label>
-
-      <input
-        type="range"
-        id="position"
-        min="5"
-        max="80"
-        value="22"
-      >
-    </div>
-
-  </div>
-
-  <div class="section">
-
-    <div class="sectionTitle">Colors</div>
-
-    <div class="colors">
-
-      <div class="colorBox">
-        Text
-        <input type="color" id="textColor" value="#ffffff">
-      </div>
-
-      <div class="colorBox">
-        Glow
-        <input type="color" id="glowColor" value="#7c5cff">
-      </div>
-
-    </div>
-
-  </div>
-
-  <div class="stats">
-
-    <div class="stat">
-      <b>100+</b>
-      <span>Fonts</span>
-    </div>
-
-    <div class="stat">
-      <b>100+</b>
-      <span>Effects</span>
-    </div>
-
-    <div class="stat">
-      <b>9:16</b>
-      <span>Reels Ready</span>
-    </div>
-
-  </div>
+<button class="secondary" id="exportBtn">
+🎬 Export Captioned Video
+</button>
 
 </div>
 
 </div>
 
-<footer>
-  PCAP Studio • Professional Caption Creator
-</footer>
 
-</div>
+<script type="module">
 
-<script>
-
-/* -----------------------------
-   100+ FONT COLLECTION
------------------------------ */
-
-const fonts = [
-"Arial",
-"Verdana",
-"Tahoma",
-"Trebuchet MS",
-"Georgia",
-"Times New Roman",
-"Courier New",
-"Impact",
-"Comic Sans MS",
-"Lucida Console",
-"Lucida Sans",
-"Palatino Linotype",
-"Book Antiqua",
-"Century Gothic",
-"Franklin Gothic Medium",
-"Gill Sans",
-"Segoe UI",
-"Helvetica",
-"Helvetica Neue",
-"Roboto",
-"Roboto Condensed",
-"Roboto Slab",
-"Open Sans",
-"Open Sans Condensed",
-"Montserrat",
-"Poppins",
-"Raleway",
-"Nunito",
-"Nunito Sans",
-"Inter",
-"Oswald",
-"Playfair Display",
-"Merriweather",
-"Lora",
-"Libre Baskerville",
-"DM Sans",
-"Manrope",
-"Outfit",
-"Space Grotesk",
-"Plus Jakarta Sans",
-"Work Sans",
-"Rubik",
-"Quicksand",
-"Josefin Sans",
-"Barlow",
-"Barlow Condensed",
-"Archivo",
-"Archivo Black",
-"Anton",
-"Bebas Neue",
-"Alfa Slab One",
-"Black Han Sans",
-"Bungee",
-"Bungee Shade",
-"Cabin",
-"Comfortaa",
-"Concert One",
-"Courgette",
-"Cuprum",
-"Days One",
-"Fjalla One",
-"Fredoka",
-"Great Vibes",
-"Handlee",
-"Heebo",
-"IBM Plex Sans",
-"IBM Plex Mono",
-"Inconsolata",
-"Indie Flower",
-"Kalam",
-"Kaushan Script",
-"Lexend",
-"Marck Script",
-"Michroma",
-"Monoton",
-"Orbitron",
-"Pacifico",
-"Patrick Hand",
-"Permanent Marker",
-"Philosopher",
-"Press Start 2P",
-"Righteous",
-"Russo One",
-"Shadows Into Light",
-"Sigmar",
-"Silkscreen",
-"Six Caps",
-"Slabo 27px",
-"Staatliches",
-"Stardos Stencil",
-"Syne",
-"Teko",
-"Titillium Web",
-"Ubuntu",
-"Unbounded",
-"Varela Round",
-"Vollkorn",
-"Yanone Kaffeesatz",
-"ZCOOL KuaiLe",
-"Zilla Slab",
-"Acme",
-"Alata",
-"Amatic SC",
-"Bitter",
-"Chakra Petch",
-"Changa",
-"Cinzel",
-"Exo 2",
-"Fira Sans",
-"Fugaz One",
-"Gruppo",
-"Hind",
-"Jost",
-"League Spartan",
-"Lexend Deca",
-"Mulish",
-"Overpass",
-"Prompt",
-"Saira",
-"Space Mono"
-];
-
-const fontSelect=document.getElementById("fontSelect");
-
-fonts.forEach((font,i)=>{
-  const option=document.createElement("option");
-  option.value=font;
-  option.textContent=(i+1)+". "+font;
-  option.style.fontFamily=font;
-  fontSelect.appendChild(option);
-});
+import { pipeline }
+from "https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.8.1";
 
 
-/* -----------------------------
-   ELEMENTS
------------------------------ */
+const videoInput = document.getElementById("videoInput");
+const video = document.getElementById("video");
+const autoBtn = document.getElementById("autoBtn");
+const exportBtn = document.getElementById("exportBtn");
+const statusBox = document.getElementById("status");
+const progressBar = document.getElementById("progressBar");
+const captionText = document.getElementById("captionText");
+const captionPreview = document.getElementById("captionPreview");
+const fontSelect = document.getElementById("fontSelect");
+const animation = document.getElementById("animation");
+const size = document.getElementById("size");
+const position = document.getElementById("position");
+const textColor = document.getElementById("textColor");
+const glowColor = document.getElementById("glowColor");
+const captionsBox = document.getElementById("captionsBox");
+const captionList = document.getElementById("captionList");
 
-const videoInput=document.getElementById("videoInput");
-const video=document.getElementById("video");
-const empty=document.getElementById("empty");
-const caption=document.getElementById("caption");
-const captionText=document.getElementById("captionText");
-const size=document.getElementById("size");
-const position=document.getElementById("position");
-const sizeValue=document.getElementById("sizeValue");
-const posValue=document.getElementById("posValue");
-const textColor=document.getElementById("textColor");
-const glowColor=document.getElementById("glowColor");
-const animationSelect=document.getElementById("animationSelect");
+let videoFile = null;
+let transcriber = null;
+let generatedChunks = [];
 
 
-/* -----------------------------
-   VIDEO UPLOAD
------------------------------ */
+function setStatus(text){
+  statusBox.textContent = text;
+}
 
-videoInput.addEventListener("change",()=>{
 
-  const file=videoInput.files[0];
+function setProgress(value){
+  progressBar.style.width = Math.max(0,Math.min(100,value)) + "%";
+}
 
-  if(!file)return;
 
-  const url=URL.createObjectURL(file);
+videoInput.addEventListener("change",e=>{
 
-  video.src=url;
-  video.style.display="block";
-  empty.style.display="none";
+  videoFile = e.target.files[0];
+
+  if(!videoFile) return;
+
+  const url = URL.createObjectURL(videoFile);
+
+  video.src = url;
+  video.load();
+
+  setStatus("Video loaded. Press Generate Auto Captions.");
+
+  captionPreview.textContent = "Your Caption";
 
 });
 
-
-/* -----------------------------
-   CAPTION TEXT
------------------------------ */
 
 captionText.addEventListener("input",()=>{
-  caption.textContent=captionText.value || "Your Caption";
+  captionPreview.textContent =
+    captionText.value || "Your Caption";
 });
 
-
-/* -----------------------------
-   FONT
------------------------------ */
 
 fontSelect.addEventListener("change",()=>{
-
-  caption.style.fontFamily=fontSelect.value;
-
+  captionPreview.style.fontFamily = fontSelect.value;
 });
 
-
-/* -----------------------------
-   SIZE
------------------------------ */
 
 size.addEventListener("input",()=>{
-
-  caption.style.fontSize=size.value+"px";
-  sizeValue.textContent=size.value+"px";
-
+  captionPreview.style.fontSize = size.value + "px";
 });
 
-
-/* -----------------------------
-   POSITION
------------------------------ */
 
 position.addEventListener("input",()=>{
-
-  caption.style.bottom=position.value+"%";
-  posValue.textContent=position.value+"%";
-
+  captionPreview.style.bottom = position.value + "%";
 });
 
 
-/* -----------------------------
-   COLORS
------------------------------ */
-
 textColor.addEventListener("input",()=>{
-
-  caption.style.color=textColor.value;
-
+  captionPreview.style.color = textColor.value;
 });
 
 
 glowColor.addEventListener("input",()=>{
-
-  caption.style.textShadow=
-    "0 0 5px "+glowColor.value+
-    ",0 0 15px "+glowColor.value+
-    ",0 3px 12px #000";
-
+  captionPreview.style.textShadow =
+    "0 0 12px " + glowColor.value +
+    ",0 3px 10px #000";
 });
 
 
-/* -----------------------------
-   ANIMATION
------------------------------ */
+animation.addEventListener("change",()=>{
 
-animationSelect.addEventListener("change",()=>{
+  captionPreview.style.animation = "none";
 
-  caption.classList.remove(
-    "anim-pop",
-    "anim-bounce",
-    "anim-shake",
-    "anim-glow"
-  );
+  if(animation.value==="pop"){
+    captionPreview.style.animation =
+      "pcapPop .5s ease";
+  }
 
-  const value=animationSelect.value;
+  if(animation.value==="bounce"){
+    captionPreview.style.animation =
+      "pcapBounce .7s ease";
+  }
 
-  if(value!=="none"){
-    caption.classList.add("anim-"+value);
+  if(animation.value==="shake"){
+    captionPreview.style.animation =
+      "pcapShake .4s ease";
+  }
+
+  if(animation.value==="glow"){
+    captionPreview.style.animation =
+      "pcapGlow 1s infinite alternate";
   }
 
 });
 
 
-/* -----------------------------
-   AUTO CAPTION BUTTON
------------------------------ */
+function formatTime(sec){
 
-document.getElementById("autoBtn").addEventListener("click",()=>{
+  sec = Math.max(0,sec || 0);
+
+  const m = Math.floor(sec/60);
+  const s = Math.floor(sec%60);
+
+  return String(m).padStart(2,"0") +
+         ":" +
+         String(s).padStart(2,"0");
+
+}
+
+
+async function extractAudio(file){
+
+  const arrayBuffer = await file.arrayBuffer();
+
+  const audioContext =
+    new AudioContext();
+
+  const decoded =
+    await audioContext.decodeAudioData(arrayBuffer);
+
+  const targetRate = 16000;
+
+  const duration = decoded.duration;
+
+  const offline =
+    new OfflineAudioContext(
+      1,
+      Math.ceil(duration * targetRate),
+      targetRate
+    );
+
+  const source =
+    offline.createBufferSource();
+
+  source.buffer = decoded;
+
+  source.connect(offline.destination);
+
+  source.start(0);
+
+  const rendered =
+    await offline.startRendering();
+
+  await audioContext.close();
+
+  return rendered.getChannelData(0);
+
+}
+
+
+async function getTranscriber(){
+
+  if(transcriber) return transcriber;
+
+  setStatus(
+    "Downloading AI speech model for the first time. This may take a while..."
+  );
+
+  transcriber =
+    await pipeline(
+      "automatic-speech-recognition",
+      "onnx-community/whisper-tiny"
+    );
+
+  return transcriber;
+
+}
+
+
+function showCaptions(chunks){
+
+  captionList.innerHTML = "";
+
+  chunks.forEach((chunk,index)=>{
+
+    const div =
+      document.createElement("div");
+
+    div.className = "captionItem";
+
+    const start =
+      chunk.timestamp?.[0] ?? 0;
+
+    const end =
+      chunk.timestamp?.[1] ?? start;
+
+    div.innerHTML =
+      `<div class="captionTime">
+        ${formatTime(start)} → ${formatTime(end)}
+      </div>
+      <div>${escapeHtml(chunk.text || "")}</div>`;
+
+    captionList.appendChild(div);
+
+  });
+
+  captionsBox.style.display = "block";
+
+}
+
+
+function escapeHtml(text){
+
+  const div =
+    document.createElement("div");
+
+  div.textContent = text;
+
+  return div.innerHTML;
+
+}
+
+
+autoBtn.addEventListener("click",async()=>{
+
+  if(!videoFile){
+
+    setStatus("Please select a video first.");
+
+    return;
+
+  }
+
+  autoBtn.disabled = true;
+
+  try{
+
+    setProgress(5);
+
+    setStatus("Reading video audio...");
+
+    const audio =
+      await extractAudio(videoFile);
+
+    setProgress(20);
+
+    setStatus(
+      "Loading Whisper AI model..."
+    );
+
+    const pipe =
+      await getTranscriber();
+
+    setProgress(40);
+
+    setStatus(
+      "AI is transcribing your video. Please wait..."
+    );
+
+    const output =
+      await pipe(
+        audio,
+        {
+          chunk_length_s: 30,
+          stride_length_s: 5,
+          return_timestamps: true
+        }
+      );
+
+    setProgress(90);
+
+    generatedChunks =
+      output.chunks || [];
+
+    if(!generatedChunks.length){
+
+      generatedChunks = [{
+        timestamp:[0,video.duration || 0],
+        text:output.text || ""
+      }];
+
+    }
+
+    showCaptions(generatedChunks);
+
+    captionText.value =
+      output.text || "";
+
+    captionPreview.textContent =
+      output.text || "Caption";
+
+    setProgress(100);
+
+    setStatus(
+      "✅ Auto captions generated successfully."
+    );
+
+  }catch(error){
+
+    console.error(error);
+
+    setProgress(0);
+
+    setStatus(
+      "❌ Caption generation failed: " +
+      (error.message || error)
+    );
+
+  }finally{
+
+    autoBtn.disabled = false;
+
+  }
+
+});
+
+
+exportBtn.addEventListener("click",()=>{
 
   alert(
-    "AI Auto Caption Engine is the next module. " +
-    "The video editor is ready; the speech-to-text engine will be connected next."
+    "Caption export engine will be connected in the next module. Auto Caption Engine is now active."
   );
 
 });
 
 
-/* -----------------------------
-   EXPORT
------------------------------ */
+const style =
+document.createElement("style");
 
-document.getElementById("exportBtn").addEventListener("click",()=>{
+style.textContent = `
 
-  alert(
-    "Professional video rendering/export engine will be connected in the next module."
-  );
+@keyframes pcapPop{
+  0%{transform:translateX(-50%) scale(.5);opacity:0}
+  100%{transform:translateX(-50%) scale(1);opacity:1}
+}
 
-});
+@keyframes pcapBounce{
+  0%,100%{transform:translateX(-50%) translateY(0)}
+  50%{transform:translateX(-50%) translateY(-15px)}
+}
+
+@keyframes pcapShake{
+  0%,100%{transform:translateX(-50%)}
+  25%{transform:translateX(-55%)}
+  75%{transform:translateX(-45%)}
+}
+
+@keyframes pcapGlow{
+  from{text-shadow:0 0 4px currentColor}
+  to{text-shadow:0 0 25px currentColor}
+}
+
+`;
+
+document.head.appendChild(style);
 
 </script>
 
