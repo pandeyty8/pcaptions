@@ -1,0 +1,856 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="theme-color" content="#07070a">
+<title>PCAP Studio — AI Video Captions</title>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  --bg:#07070a;
+  --panel:#101116;
+  --panel2:#17181f;
+  --border:#292b35;
+  --text:#f7f7f8;
+  --muted:#9295a3;
+  --accent:#7c5cff;
+  --accent2:#a78bfa;
+}
+
+body{
+  background:
+    radial-gradient(circle at 20% 0%,rgba(124,92,255,.18),transparent 30%),
+    radial-gradient(circle at 90% 10%,rgba(0,212,255,.10),transparent 25%),
+    var(--bg);
+  color:var(--text);
+  font-family:Arial,Helvetica,sans-serif;
+  min-height:100vh;
+}
+
+button,input,select{font:inherit}
+
+button{
+  border:0;
+  cursor:pointer;
+}
+
+.app{
+  max-width:1250px;
+  margin:auto;
+  padding:18px;
+}
+
+header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:15px;
+  padding:12px 0 22px;
+}
+
+.logo{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  font-weight:900;
+  font-size:24px;
+  letter-spacing:-1px;
+}
+
+.logoIcon{
+  width:38px;
+  height:38px;
+  border-radius:12px;
+  display:grid;
+  place-items:center;
+  background:linear-gradient(135deg,#7c5cff,#00c8ff);
+  color:white;
+  box-shadow:0 8px 30px rgba(124,92,255,.3);
+}
+
+.badge{
+  font-size:11px;
+  padding:5px 8px;
+  border-radius:20px;
+  background:#1c1d25;
+  color:#b9b2ff;
+  border:1px solid #302d50;
+}
+
+.hero{
+  text-align:center;
+  padding:35px 15px 30px;
+}
+
+.hero h1{
+  font-size:clamp(32px,7vw,68px);
+  line-height:1;
+  letter-spacing:-3px;
+  background:linear-gradient(90deg,#fff,#aaa1ff,#fff);
+  -webkit-background-clip:text;
+  color:transparent;
+}
+
+.hero p{
+  color:var(--muted);
+  max-width:650px;
+  margin:16px auto 0;
+  line-height:1.6;
+}
+
+.workspace{
+  display:grid;
+  grid-template-columns:1.25fr .75fr;
+  gap:18px;
+}
+
+.card{
+  background:rgba(16,17,22,.88);
+  border:1px solid var(--border);
+  border-radius:20px;
+  padding:18px;
+  box-shadow:0 20px 70px rgba(0,0,0,.25);
+  backdrop-filter:blur(14px);
+}
+
+.preview{
+  min-height:560px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  position:relative;
+  overflow:hidden;
+}
+
+.videoWrap{
+  width:min(100%,390px);
+  aspect-ratio:9/16;
+  background:#050507;
+  border:1px solid #30313a;
+  border-radius:18px;
+  overflow:hidden;
+  position:relative;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+video{
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  display:none;
+}
+
+.empty{
+  text-align:center;
+  padding:30px;
+  color:var(--muted);
+}
+
+.emptyIcon{
+  width:70px;
+  height:70px;
+  margin:auto auto 18px;
+  border-radius:22px;
+  background:#191a21;
+  display:grid;
+  place-items:center;
+  font-size:30px;
+}
+
+.caption{
+  position:absolute;
+  left:50%;
+  bottom:22%;
+  transform:translateX(-50%);
+  width:92%;
+  text-align:center;
+  font-size:31px;
+  font-weight:900;
+  line-height:1.1;
+  color:white;
+  text-shadow:0 3px 12px #000;
+  pointer-events:none;
+  word-break:break-word;
+}
+
+.upload{
+  margin-top:15px;
+  display:block;
+  width:100%;
+  padding:15px;
+  border-radius:13px;
+  background:linear-gradient(135deg,#7c5cff,#6347e8);
+  color:white;
+  font-weight:800;
+  text-align:center;
+}
+
+input[type=file]{display:none}
+
+.section{
+  margin-bottom:20px;
+}
+
+.sectionTitle{
+  font-size:13px;
+  text-transform:uppercase;
+  letter-spacing:1px;
+  color:#a7a9b4;
+  margin-bottom:10px;
+}
+
+.primary{
+  width:100%;
+  padding:14px;
+  border-radius:12px;
+  color:white;
+  font-weight:800;
+  background:linear-gradient(135deg,#7c5cff,#00aeea);
+  margin-bottom:10px;
+}
+
+.secondary{
+  width:100%;
+  padding:12px;
+  border-radius:12px;
+  background:#1a1b22;
+  color:white;
+  border:1px solid #2b2c34;
+}
+
+.control{
+  margin-bottom:13px;
+}
+
+.control label{
+  display:flex;
+  justify-content:space-between;
+  color:#c8c9d1;
+  font-size:13px;
+  margin-bottom:7px;
+}
+
+select,
+input[type=text]{
+  width:100%;
+  background:#191a20;
+  color:white;
+  border:1px solid #30313a;
+  border-radius:10px;
+  padding:11px;
+  outline:none;
+}
+
+input[type=range]{
+  width:100%;
+  accent-color:#7c5cff;
+}
+
+.colors{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+}
+
+.colorBox{
+  background:#191a20;
+  border:1px solid #30313a;
+  padding:8px;
+  border-radius:10px;
+  color:#bbb;
+  font-size:12px;
+}
+
+.colorBox input{
+  width:100%;
+  height:34px;
+  margin-top:5px;
+  border:0;
+  background:transparent;
+}
+
+.fontCount{
+  margin-top:7px;
+  font-size:11px;
+  color:#777b88;
+}
+
+.animPreview{
+  padding:15px;
+  background:#0b0c10;
+  border-radius:12px;
+  text-align:center;
+  font-size:20px;
+  font-weight:900;
+  margin-top:10px;
+}
+
+@keyframes pop{
+  0%{transform:scale(.7);opacity:0}
+  70%{transform:scale(1.08)}
+  100%{transform:scale(1);opacity:1}
+}
+
+@keyframes bounce{
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(-8px)}
+}
+
+@keyframes shake{
+  0%,100%{transform:translateX(0)}
+  25%{transform:translateX(-5px)}
+  75%{transform:translateX(5px)}
+}
+
+@keyframes glow{
+  0%,100%{filter:drop-shadow(0 0 2px white)}
+  50%{filter:drop-shadow(0 0 15px #a78bfa)}
+}
+
+.anim-pop{animation:pop .8s infinite}
+.anim-bounce{animation:bounce .8s infinite}
+.anim-shake{animation:shake .5s infinite}
+.anim-glow{animation:glow 1.2s infinite}
+
+.stats{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:10px;
+  margin-top:18px;
+}
+
+.stat{
+  padding:13px;
+  border-radius:13px;
+  background:#111218;
+  border:1px solid #252630;
+  text-align:center;
+}
+
+.stat b{
+  display:block;
+  font-size:20px;
+}
+
+.stat span{
+  color:#777b88;
+  font-size:11px;
+}
+
+footer{
+  text-align:center;
+  padding:35px 0 10px;
+  color:#666976;
+  font-size:12px;
+}
+
+@media(max-width:850px){
+  .workspace{grid-template-columns:1fr}
+  .preview{min-height:500px}
+}
+
+@media(max-width:480px){
+  .app{padding:10px}
+  .hero{padding:25px 8px}
+  .hero h1{letter-spacing:-2px}
+  .card{padding:13px}
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+<header>
+  <div class="logo">
+    <div class="logoIcon">P</div>
+    PCAP Studio
+  </div>
+  <div class="badge">PRO VIDEO CAPTIONS</div>
+</header>
+
+<section class="hero">
+  <h1>Turn Videos Into<br>Powerful Captions.</h1>
+  <p>
+    Create stylish captions for Reels, Shorts and videos
+    with professional fonts, animations and effects.
+  </p>
+</section>
+
+<div class="workspace">
+
+<!-- PREVIEW -->
+<div class="card preview">
+
+  <div class="videoWrap">
+
+    <video id="video" controls></video>
+
+    <div class="empty" id="empty">
+      <div class="emptyIcon">🎬</div>
+      <h3>Upload your video</h3>
+      <p style="margin-top:8px">
+        Start creating professional captions
+      </p>
+    </div>
+
+    <div class="caption" id="caption">
+      Your Caption
+    </div>
+
+  </div>
+
+</div>
+
+<!-- CONTROLS -->
+<div class="card">
+
+  <div class="section">
+
+    <div class="sectionTitle">Video</div>
+
+    <label class="upload">
+      📁 Upload Video
+      <input id="videoInput" type="file" accept="video/*">
+    </label>
+
+    <button class="primary" id="autoBtn">
+      ✨ Generate Auto Captions
+    </button>
+
+    <button class="secondary" id="exportBtn">
+      ⬇ Export Captioned Video
+    </button>
+
+  </div>
+
+  <div class="section">
+
+    <div class="sectionTitle">Caption Text</div>
+
+    <input
+      type="text"
+      id="captionText"
+      value="Your Caption"
+      placeholder="Type caption..."
+    >
+
+  </div>
+
+  <div class="section">
+
+    <div class="sectionTitle">Font</div>
+
+    <select id="fontSelect"></select>
+
+    <div class="fontCount">
+      100+ font styles available
+    </div>
+
+  </div>
+
+  <div class="section">
+
+    <div class="sectionTitle">Animation</div>
+
+    <select id="animationSelect">
+      <option value="none">None</option>
+      <option value="pop">Pop</option>
+      <option value="bounce">Bounce</option>
+      <option value="shake">Shake</option>
+      <option value="glow">Glow</option>
+    </select>
+
+  </div>
+
+  <div class="section">
+
+    <div class="sectionTitle">Caption Size</div>
+
+    <div class="control">
+      <label>
+        <span>Size</span>
+        <span id="sizeValue">31px</span>
+      </label>
+
+      <input
+        type="range"
+        id="size"
+        min="12"
+        max="70"
+        value="31"
+      >
+    </div>
+
+  </div>
+
+  <div class="section">
+
+    <div class="sectionTitle">Position</div>
+
+    <div class="control">
+      <label>
+        <span>Vertical Position</span>
+        <span id="posValue">22%</span>
+      </label>
+
+      <input
+        type="range"
+        id="position"
+        min="5"
+        max="80"
+        value="22"
+      >
+    </div>
+
+  </div>
+
+  <div class="section">
+
+    <div class="sectionTitle">Colors</div>
+
+    <div class="colors">
+
+      <div class="colorBox">
+        Text
+        <input type="color" id="textColor" value="#ffffff">
+      </div>
+
+      <div class="colorBox">
+        Glow
+        <input type="color" id="glowColor" value="#7c5cff">
+      </div>
+
+    </div>
+
+  </div>
+
+  <div class="stats">
+
+    <div class="stat">
+      <b>100+</b>
+      <span>Fonts</span>
+    </div>
+
+    <div class="stat">
+      <b>100+</b>
+      <span>Effects</span>
+    </div>
+
+    <div class="stat">
+      <b>9:16</b>
+      <span>Reels Ready</span>
+    </div>
+
+  </div>
+
+</div>
+
+</div>
+
+<footer>
+  PCAP Studio • Professional Caption Creator
+</footer>
+
+</div>
+
+<script>
+
+/* -----------------------------
+   100+ FONT COLLECTION
+----------------------------- */
+
+const fonts = [
+"Arial",
+"Verdana",
+"Tahoma",
+"Trebuchet MS",
+"Georgia",
+"Times New Roman",
+"Courier New",
+"Impact",
+"Comic Sans MS",
+"Lucida Console",
+"Lucida Sans",
+"Palatino Linotype",
+"Book Antiqua",
+"Century Gothic",
+"Franklin Gothic Medium",
+"Gill Sans",
+"Segoe UI",
+"Helvetica",
+"Helvetica Neue",
+"Roboto",
+"Roboto Condensed",
+"Roboto Slab",
+"Open Sans",
+"Open Sans Condensed",
+"Montserrat",
+"Poppins",
+"Raleway",
+"Nunito",
+"Nunito Sans",
+"Inter",
+"Oswald",
+"Playfair Display",
+"Merriweather",
+"Lora",
+"Libre Baskerville",
+"DM Sans",
+"Manrope",
+"Outfit",
+"Space Grotesk",
+"Plus Jakarta Sans",
+"Work Sans",
+"Rubik",
+"Quicksand",
+"Josefin Sans",
+"Barlow",
+"Barlow Condensed",
+"Archivo",
+"Archivo Black",
+"Anton",
+"Bebas Neue",
+"Alfa Slab One",
+"Black Han Sans",
+"Bungee",
+"Bungee Shade",
+"Cabin",
+"Comfortaa",
+"Concert One",
+"Courgette",
+"Cuprum",
+"Days One",
+"Fjalla One",
+"Fredoka",
+"Great Vibes",
+"Handlee",
+"Heebo",
+"IBM Plex Sans",
+"IBM Plex Mono",
+"Inconsolata",
+"Indie Flower",
+"Kalam",
+"Kaushan Script",
+"Lexend",
+"Marck Script",
+"Michroma",
+"Monoton",
+"Orbitron",
+"Pacifico",
+"Patrick Hand",
+"Permanent Marker",
+"Philosopher",
+"Press Start 2P",
+"Righteous",
+"Russo One",
+"Shadows Into Light",
+"Sigmar",
+"Silkscreen",
+"Six Caps",
+"Slabo 27px",
+"Staatliches",
+"Stardos Stencil",
+"Syne",
+"Teko",
+"Titillium Web",
+"Ubuntu",
+"Unbounded",
+"Varela Round",
+"Vollkorn",
+"Yanone Kaffeesatz",
+"ZCOOL KuaiLe",
+"Zilla Slab",
+"Acme",
+"Alata",
+"Amatic SC",
+"Bitter",
+"Chakra Petch",
+"Changa",
+"Cinzel",
+"Exo 2",
+"Fira Sans",
+"Fugaz One",
+"Gruppo",
+"Hind",
+"Jost",
+"League Spartan",
+"Lexend Deca",
+"Mulish",
+"Overpass",
+"Prompt",
+"Saira",
+"Space Mono"
+];
+
+const fontSelect=document.getElementById("fontSelect");
+
+fonts.forEach((font,i)=>{
+  const option=document.createElement("option");
+  option.value=font;
+  option.textContent=(i+1)+". "+font;
+  option.style.fontFamily=font;
+  fontSelect.appendChild(option);
+});
+
+
+/* -----------------------------
+   ELEMENTS
+----------------------------- */
+
+const videoInput=document.getElementById("videoInput");
+const video=document.getElementById("video");
+const empty=document.getElementById("empty");
+const caption=document.getElementById("caption");
+const captionText=document.getElementById("captionText");
+const size=document.getElementById("size");
+const position=document.getElementById("position");
+const sizeValue=document.getElementById("sizeValue");
+const posValue=document.getElementById("posValue");
+const textColor=document.getElementById("textColor");
+const glowColor=document.getElementById("glowColor");
+const animationSelect=document.getElementById("animationSelect");
+
+
+/* -----------------------------
+   VIDEO UPLOAD
+----------------------------- */
+
+videoInput.addEventListener("change",()=>{
+
+  const file=videoInput.files[0];
+
+  if(!file)return;
+
+  const url=URL.createObjectURL(file);
+
+  video.src=url;
+  video.style.display="block";
+  empty.style.display="none";
+
+});
+
+
+/* -----------------------------
+   CAPTION TEXT
+----------------------------- */
+
+captionText.addEventListener("input",()=>{
+  caption.textContent=captionText.value || "Your Caption";
+});
+
+
+/* -----------------------------
+   FONT
+----------------------------- */
+
+fontSelect.addEventListener("change",()=>{
+
+  caption.style.fontFamily=fontSelect.value;
+
+});
+
+
+/* -----------------------------
+   SIZE
+----------------------------- */
+
+size.addEventListener("input",()=>{
+
+  caption.style.fontSize=size.value+"px";
+  sizeValue.textContent=size.value+"px";
+
+});
+
+
+/* -----------------------------
+   POSITION
+----------------------------- */
+
+position.addEventListener("input",()=>{
+
+  caption.style.bottom=position.value+"%";
+  posValue.textContent=position.value+"%";
+
+});
+
+
+/* -----------------------------
+   COLORS
+----------------------------- */
+
+textColor.addEventListener("input",()=>{
+
+  caption.style.color=textColor.value;
+
+});
+
+
+glowColor.addEventListener("input",()=>{
+
+  caption.style.textShadow=
+    "0 0 5px "+glowColor.value+
+    ",0 0 15px "+glowColor.value+
+    ",0 3px 12px #000";
+
+});
+
+
+/* -----------------------------
+   ANIMATION
+----------------------------- */
+
+animationSelect.addEventListener("change",()=>{
+
+  caption.classList.remove(
+    "anim-pop",
+    "anim-bounce",
+    "anim-shake",
+    "anim-glow"
+  );
+
+  const value=animationSelect.value;
+
+  if(value!=="none"){
+    caption.classList.add("anim-"+value);
+  }
+
+});
+
+
+/* -----------------------------
+   AUTO CAPTION BUTTON
+----------------------------- */
+
+document.getElementById("autoBtn").addEventListener("click",()=>{
+
+  alert(
+    "AI Auto Caption Engine is the next module. " +
+    "The video editor is ready; the speech-to-text engine will be connected next."
+  );
+
+});
+
+
+/* -----------------------------
+   EXPORT
+----------------------------- */
+
+document.getElementById("exportBtn").addEventListener("click",()=>{
+
+  alert(
+    "Professional video rendering/export engine will be connected in the next module."
+  );
+
+});
+
+</script>
+
+</body>
+</html>
